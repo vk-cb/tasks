@@ -1,8 +1,12 @@
 import mongoose from "mongoose";
-const baseUrl = process.env.MOGO_URI || 'mongodb://localhost:27017/task-app'
-
+import dotenv from "dotenv";
+dotenv.config(); 
+const baseUrl = process.env.MONGO_URI;
+if (!baseUrl) {
+    throw new Error("Environment variable MONGO_URI is not defined");
+  }
 const db = async () => {
-    console.log(baseUrl)
+    
     try {
         await mongoose.connect(baseUrl)
         console.log('DB connected')
