@@ -1,4 +1,5 @@
 import Joi from "joi";
+import roles from "../../models/roles";
 
 export const userValidation = Joi.object({
     name : Joi.string().required().messages({
@@ -13,5 +14,9 @@ export const userValidation = Joi.object({
     tasks : Joi.string(),
     role: Joi.string().required().messages({
         "string.empty" : "Role is required to create user"
-    })
+    }),
+    roles : Joi.string().required().messages({
+        "string.empty" : "Role is required to create user"
+    }),
+    
 })
