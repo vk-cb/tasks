@@ -21,7 +21,11 @@ const taskSchema = new mongoose.Schema ({
     updatedAt : {
         type : Date,
         default : Date.now()
-    }
+    },
+    createdBy : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+      },
 })
 
 export default mongoose.model('tasks', taskSchema, "tasks")

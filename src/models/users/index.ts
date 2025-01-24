@@ -14,10 +14,10 @@ const userSchema = new mongoose.Schema ({
         type : String,
         required  : true
      }, 
-     tasks: {
+     tasks:[ {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'tasks',
-        },
+        }],
      role : {
         type : String,
         required : true,
