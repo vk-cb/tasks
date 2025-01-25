@@ -11,5 +11,5 @@ app.use(express.json());
 app.use('/v1/api', router);
 
 app.listen(port, () => {
-    console.log(`Example app listening on port http://localhost:${port}`);
+    console.log(`App listening on port http://localhost:${port}`);
 });

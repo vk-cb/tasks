@@ -14,7 +14,7 @@ if (!secret) {
 export const userSignUpController = async (req : Request, res:Response,)=>{
     console.log(process.env.JWT_SECRET)
     try {
-        const {email, password, name, role, } = req.body;
+        const {email, password, name, role } = req.body;
         const findUser = await users.findOne({email})
         if(findUser){
           res.send({msg : "User is already exist for this email adderss use another email"})
@@ -24,9 +24,9 @@ export const userSignUpController = async (req : Request, res:Response,)=>{
         const newUser =new users({email, password : hashedPassword, name, role}) 
         // console.log(newUser)
        await newUser.save()
-       const findRole = await roles.findById(newUser.role)
-        const token = jwt.sign({ id: newUser._id, name: newUser.name, email: newUser.email, role: findRole,   }, secret);
-         res.status(statusCodes.success).json({status: statusCodes.success, msg: "User created successfully",  token , data : { id: newUser._id, name: newUser.name, email: newUser.email, role: findRole,  createdAt: newUser.createdAt, updatedAt: newUser.updatedAt } });
+       
+        const token = jwt.sign({ id: newUser._id, name: newUser.name, email: newUser.email, role: role,   }, secret);
+         res.status(statusCodes.success).json({status: statusCodes.success, msg: "User created successfully",  token , data : { id: newUser._id, name: newUser.name, email: newUser.email, role: role,  createdAt: newUser.createdAt, updatedAt: newUser.updatedAt } });
          return;
     } catch (error) {
         res.status(statusCodes.internalServerError).send(error), {status : statusCodes.internalServerError, msg: "Internal Server Error" };
@@ -40,12 +40,16 @@ export const userLoginController = async (req: Request, res: Response): Promise<
 
     // Find the user by email
     const findUser:any = await users.findOne({ email });
-
+    if(findUser.isActive === false){
+      res.status(statusCodes.forbidden).send({ msg: "Your account is blocked. Please contact the admin." });
+      return
+    }
     // If user does not exist, send a response
     if (!findUser) {
        res
         .status(statusCodes.notFound)
         .send({ msg: "User does not exist for this email address. Use another email." });
+        return;
     }
 
     // Compare the password
@@ -56,6 +60,7 @@ export const userLoginController = async (req: Request, res: Response): Promise<
       res
         .status(statusCodes.unauthorized)
         .send({ msg: "Invalid password" });
+        return;
     }
 
     // Generate a JWT token
