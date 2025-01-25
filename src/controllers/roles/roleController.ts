@@ -22,7 +22,7 @@ export const initializeRoles = async (req: Request, res: Response): Promise<void
 
     // Send a success response with the roles
     res.status(statusCodes.success).json({
-      message: "Roles initialized successfully",
+      message: "Roles fetched successfully",
       data: insertedRoles,
     });
   } catch (error) {

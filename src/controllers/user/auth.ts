@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { statusCodes } from "../../utility/statusCodes";
 import dotenv from "dotenv";
+import roles from "../../models/roles";
 dotenv.config(); 
 const secret = process.env.JWT_SECRET    
 if (!secret) {
@@ -23,11 +24,13 @@ export const userSignUpController = async (req : Request, res:Response,)=>{
         const newUser =new users({email, password : hashedPassword, name, role}) 
         // console.log(newUser)
        await newUser.save()
-       
-        const token = jwt.sign({ id: newUser._id, name: newUser.name, email: newUser.email,  }, secret, { expiresIn: '1h' });
-        res.status(statusCodes.success).json({ msg: "User created successfully",  token });
+       const findRole = await roles.findById(newUser.role)
+        const token = jwt.sign({ id: newUser._id, name: newUser.name, email: newUser.email, role: findRole,   }, secret);
+         res.status(statusCodes.success).json({status: statusCodes.success, msg: "User created successfully",  token , data : { id: newUser._id, name: newUser.name, email: newUser.email, role: findRole,  createdAt: newUser.createdAt, updatedAt: newUser.updatedAt } });
+         return;
     } catch (error) {
-        res.status(statusCodes.internalServerError).send(error)
+        res.status(statusCodes.internalServerError).send(error), {status : statusCodes.internalServerError, msg: "Internal Server Error" };
+        return;
     }
 }
 
@@ -58,8 +61,7 @@ export const userLoginController = async (req: Request, res: Response): Promise<
     // Generate a JWT token
     const token = jwt.sign(
       { id: findUser._id, name: findUser.name, email: findUser.email },
-      secret,
-      { expiresIn: "1h" }
+      secret
     );
 // payload
 const payload = {
@@ -67,17 +69,18 @@ const payload = {
   name: findUser.name,
   email: findUser.email,
   role: findUser.role,
-  tasks: findUser.tasks,
   createdAt: findUser.createdAt,
   updatedAt: findUser.updatedAt
 };
    
     // Respond with success
-    res
+     res
       .status(statusCodes.success)
-      .json({ msg: "User logged in successfully", token , data : payload });
+      .json({status: statusCodes.success, msg: "User logged in successfully", token , data : payload });
+      return;
   } catch (error) {
     console.error("Error in user login:", error);
-    res.status(statusCodes.internalServerError).send({ msg: "Internal Server Error", error });
+    res.status(statusCodes.internalServerError).send({status : statusCodes.internalServerError, msg: "Internal Server Error", error });
+    return;
   }
 };

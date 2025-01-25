@@ -1,3 +1,4 @@
+import { required } from "joi";
 import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema ({
@@ -12,7 +13,11 @@ const taskSchema = new mongoose.Schema ({
     status : {
         type : String,
         required : true, 
-        ref : "taskStatus"
+        default : "pending"
+    },
+    user: {
+        type: String,
+        required: true
     },
     createdAt : {
         type : Date,
@@ -22,10 +27,6 @@ const taskSchema = new mongoose.Schema ({
         type : Date,
         default : Date.now()
     },
-    createdBy : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
-      },
 })
 
 export default mongoose.model('tasks', taskSchema, "tasks")

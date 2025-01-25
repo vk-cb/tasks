@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config(); 
-const baseUrl = process.env.MONGO_URI;
+const baseUrl = process.env.MONGODB_URI;
 if (!baseUrl) {
-    throw new Error("Environment variable MONGO_URI is not defined");
+    throw new Error("Environment variable MONGODB_URI is not defined");
   }
 const db = async () => {
     

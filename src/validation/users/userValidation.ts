@@ -11,7 +11,6 @@ export const userValidation = Joi.object({
     password: Joi.string().required().messages({
         "string.empty" : "Password is required to create user"
     }),
-    tasks : Joi.string(),
     role: Joi.string().required().messages({
         "string.empty" : "Role is required to create user"
     }),
