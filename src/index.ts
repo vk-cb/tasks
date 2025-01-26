@@ -8,6 +8,7 @@ const port = process.env.PORT
 db();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
 app.use('/v1/api', router);
 
 app.listen(port, () => {
