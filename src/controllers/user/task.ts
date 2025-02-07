@@ -53,7 +53,7 @@ export const getAllUserTasksController = async (req: Request, res: Response, nex
         const getTasks = await tasks.find({ user: user._id, isActive : true });
         res.status(statusCodes.success).json({
             msg: "Tasks fetched successfully",
-            data: [getTasks],
+            data: getTasks,
         });
         return
     } catch (error) {
