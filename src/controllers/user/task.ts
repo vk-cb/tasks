@@ -70,7 +70,7 @@ export const getTaskByIdController = async (req: Request, res: Response, next: N
         res.status(statusCodes.success).json({
             status : statusCodes.success,
             msg: "Task fetched successfully",   
-            data: [getTask],
+            data: getTask,
         });
         return
     }
