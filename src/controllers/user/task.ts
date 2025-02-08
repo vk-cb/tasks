@@ -8,13 +8,13 @@ export const createTaskController = async (req: Request, res: Response, next: Ne
         const taskData = req.body;
         const { error } = taskValidation.validate(taskData);
         if (error) {
-            res.status(statusCodes.badRequest).json({ msg: error.details[0].message });
+            res.status(statusCodes.badRequest).json({status: statusCodes.badRequest, msg: error.details[0].message });
             return;
         }
         // Ensure user information is available from the middleware
         const user = req.user;
         if (!user) {
-            res.status(statusCodes.unauthorized).json({ msg: "User not authenticated" });
+            res.status(statusCodes.unauthorized).json({status: statusCodes.unauthorized, msg: "User not authenticated" });
             return;
         }
        
@@ -31,6 +31,7 @@ export const createTaskController = async (req: Request, res: Response, next: Ne
         res.status(statusCodes.success).json({
             msg: "Task created successfully",
             data: newTask,
+            status: statusCodes.success,
         });
         return
     } catch (error) {
@@ -47,13 +48,14 @@ export const getAllUserTasksController = async (req: Request, res: Response, nex
         // Ensure user information is available from the middleware
         const user = req.user;
         if (!user) {
-            res.status(statusCodes.unauthorized).json({ msg: "User not authenticated" });
+            res.status(statusCodes.unauthorized).json({status: statusCodes.unauthorized, msg: "User not authenticated" });
             return;
         }
         const getTasks = await tasks.find({ user: user._id, isActive : true });
         res.status(statusCodes.success).json({
             msg: "Tasks fetched successfully",
             data: getTasks,
+            status: statusCodes.success,
         });
         return
     } catch (error) {

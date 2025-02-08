@@ -118,18 +118,18 @@ export const updateAdminTaskController = async(req : Request, res : Response, ne
         const taskId = req.params.id;
         const admin = req.user; 
         if(req.user.role !== "admin"){
-            res.status(statusCodes.unauthorized).json({ msg: "You are not authorized" });
+            res.status(statusCodes.unauthorized).json({ status: statusCodes.unauthorized, msg: "You are not authorized" });
             return;
         }
         const updatedTask = await tasks.findOneAndUpdate({_id : taskId, isActive :true }, req.body, {new : true});
         if(!updatedTask){
-            res.status(statusCodes.notFound).json({ msg: "Task not found" });
+            res.status(statusCodes.notFound).json({ status : statusCodes.notFound, msg: "Task not found" });
             return;
         }
-        res.status(statusCodes.success).json({ msg: "Task updated successfully", data: updatedTask });
+        res.status(statusCodes.success).json({status : statusCodes.success, msg: "Task updated successfully", data: updatedTask });
         return;
     } catch (error) {
-        res.status(statusCodes.internalServerError).json({ msg: "Internal Server Error" });
+        res.status(statusCodes.internalServerError).json({ status: statusCodes.internalServerError, msg: "Internal Server Error" });
         return;
     }
 }

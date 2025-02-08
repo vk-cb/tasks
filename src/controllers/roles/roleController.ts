@@ -24,6 +24,7 @@ export const initializeRoles = async (req: Request, res: Response): Promise<void
     res.status(statusCodes.success).json({
       message: "Roles fetched successfully",
       data: insertedRoles,
+      status: statusCodes.success,
     });
   } catch (error) {
     console.error("Error initializing roles:", error);
@@ -36,6 +37,7 @@ export const initializeRoles = async (req: Request, res: Response): Promise<void
     res.status(statusCodes.internalServerError).json({
       message: "Error initializing roles",
       error: errorMessage,
+      status: statusCodes.internalServerError,
     });
   }
 };
