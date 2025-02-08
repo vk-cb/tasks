@@ -20,11 +20,15 @@ export const usersListController = async (req: Request, res: Response, next: Nex
             else {
                 if(payload.isActive){
                     const usersList = await users.find({ role: "user", isActive : payload.isActive });
-                    res.status(statusCodes.success).json( { msg: "Users fetched successfully", data: usersList, noOfBlockedUsers : usersList.length });
+                     const sortedUserList = usersList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+                    res.status(statusCodes.success).json( { msg: "Users fetched successfully", data: sortedUserList, noOfBlockedUsers : usersList.length });
                     return;
                 }else{
                     const usersList = await users.find({ role: "user", isActive : true });
-                    res.status(statusCodes.success).json({ msg: "Users fetched successfully", data: usersList, noOfUsers : usersList.length });
+                    const sortedUserList = usersList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+                    res.status(statusCodes.success).json({ msg: "Users fetched successfully", data: sortedUserList, noOfUsers : usersList.length });
                     return;
                 }
             }
@@ -78,10 +82,11 @@ export const userWiseTaskListController = async (req: Request, res: Response, ne
             msg : "User not found"
         })
         return;
-    }
+    } 
+    const sortedTasks = userTasks.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     res.status(statusCodes.success).json({
         msg : "Task fetched successfully",
-        data : userTasks
+        data : sortedTasks
     })
     return;
    } catch (error) {
