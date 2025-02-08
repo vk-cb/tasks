@@ -45,16 +45,18 @@ export const createTaskController = async (req: Request, res: Response, next: Ne
 export const getAllUserTasksController = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
 
     try {
-        // Ensure user information is available from the middleware
+        
         const user = req.user;
         if (!user) {
             res.status(statusCodes.unauthorized).json({status: statusCodes.unauthorized, msg: "User not authenticated" });
             return;
         }
         const getTasks = await tasks.find({ user: user._id, isActive : true });
+        // sort task logic
+        const sortedTasks = getTasks.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         res.status(statusCodes.success).json({
             msg: "Tasks fetched successfully",
-            data: getTasks,
+            data: sortedTasks,
             status: statusCodes.success,
         });
         return
@@ -86,7 +88,7 @@ catch (error) {
 export const updateTaskByIdController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const taskId = req.params.id;
-        const userId = req.user?._id.toString(); // Ensure req.user exists and _id is accessible
+        const userId = req.user?._id.toString(); 
         
         if (!userId) {
             res.status(statusCodes.unauthorized).json({
@@ -97,7 +99,7 @@ export const updateTaskByIdController = async (req: Request, res: Response, next
         }
 
         const updatedTask = await tasks.findOneAndUpdate(
-            { _id: taskId, user: userId, isActive: true }, // Ensure the `createdBy` field is used
+            { _id: taskId, user: userId, isActive: true }, 
             req.body,
             { new: true }
         );
