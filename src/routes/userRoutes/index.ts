@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { userLoginController, userSignUpController } from '../../controllers/user/auth';
-import { createTaskController, deleteTaskController, getAllUserTasksController, getTaskByIdController, statusChangeController, updateTaskByIdController } from '../../controllers/user/task';
+import { createTaskController, deleteTaskController, getAllUserTasksController, getTaskByIdController, statusChangeController, taskandUserDetails, taskDetailController, updateTaskByIdController } from '../../controllers/user/task';
 import { userAuthMiddleware } from '../../middlewares/userMiddleware';
 
 const router = express.Router();
@@ -16,6 +16,7 @@ router.get('/get-tasks/:id', userAuthMiddleware, getTaskByIdController);
 router.put('/update-tasks/:id', userAuthMiddleware, updateTaskByIdController);
 router.put('/status-change/:id', userAuthMiddleware, statusChangeController);
 router.post('/delete-task/:id', userAuthMiddleware, deleteTaskController);
+router.get('/task-user-details',userAuthMiddleware, taskDetailController);
 
 
 export default router;

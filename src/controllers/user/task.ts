@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { taskValidation } from "../../validation/tasks/taskValidation";
 import { statusCodes } from "../../utility/statusCodes";
 import tasks from "../../models/tasks";
+import users from "../../models/users";
 
 export const createTaskController = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try {
@@ -213,3 +214,60 @@ export const deleteTaskController = async (req :Request, res : Response , next :
         return
     }
 }
+export const taskandUserDetails = async (req: Request, res:Response, next : NextFunction):Promise<void> =>{
+
+    console.log("userDetails")
+}
+
+export const taskDetailController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const user = req.user;
+        if (!user) {
+            res.status(statusCodes.unauthorized).json({
+                status: statusCodes.unauthorized,
+                msg: "User not authenticated"
+            });
+            return;
+        }
+
+        // Fetch user details
+        const userProfile = await users.findById(user._id).select("name email role");
+        if (!userProfile) {
+            res.status(statusCodes.notFound).json({
+                status: statusCodes.notFound,
+                msg: "User not found"
+            });
+            return;
+        }
+
+        // Fetch tasks
+        const getTasks = await tasks.find({ user: user._id, isActive: true });
+
+        // Task counts
+        const totalTasks = getTasks.length;
+        const pendingTasks = getTasks.filter(task => task.status === "pending").length;
+        const doneTasks = getTasks.filter(task => task.status === "done").length;
+        const inProgressTasks = getTasks.filter(task => task.status === "in-progress").length;
+
+       
+        res.status(statusCodes.success).json({
+            msg: "Task details fetched successfully",
+            status: statusCodes.success,
+            data: {
+                profile: userProfile,
+                taskStats: {
+                    totalTasks,
+                    pendingTasks,
+                    doneTasks,
+                    inProgressTasks
+                }
+                
+            }
+        });
+        return;
+    } catch (error) {
+        console.error("Error fetching task details:", error);
+        next(error);
+        return;
+    }
+};
