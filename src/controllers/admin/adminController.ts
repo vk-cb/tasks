@@ -23,7 +23,8 @@ export const usersListController = async (
           .json({ msg: "User not authenticated" });
         return;
       } else {
-        if (payload.isActive) {
+        console.log(payload.isActive)
+        if (payload.isActive === false) {
           const usersList = await users.find(
             { role: "user", isActive: payload.isActive },
             { password: 0 }
